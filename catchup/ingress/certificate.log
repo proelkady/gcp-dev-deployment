@@ -1,0 +1,38 @@
+gcp-dev-deployment git:(main) ✗ helm install cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --set crds.enabled=true \
+  --set startupapicheck.enabled=false
+level=WARN msg="unable to find exact version; falling back to closest available version" chart=cert-manager requested="" selected=v1.19.2
+I1220 10:35:53.776886   10524 warnings.go:110] "Warning: autopilot-default-resources-mutator:Autopilot updated Deployment cert-manager/cert-manager-cainjector: defaulted unspecified 'cpu' resource for containers [cert-manager-cainjector] (see http://g.co/gke/autopilot-defaults)."
+I1220 10:35:54.414355   10524 warnings.go:110] "Warning: autopilot-default-resources-mutator:Autopilot updated Deployment cert-manager/cert-manager: defaulted unspecified 'cpu' resource for containers [cert-manager-controller] (see http://g.co/gke/autopilot-defaults)."
+I1220 10:35:55.043523   10524 warnings.go:110] "Warning: autopilot-default-resources-mutator:Autopilot updated Deployment cert-manager/cert-manager-webhook: defaulted unspecified 'cpu' resource for containers [cert-manager-webhook] (see http://g.co/gke/autopilot-defaults)."
+I1220 10:35:55.767080   10524 warnings.go:110] "Warning: AdmissionWebhookController: mutated namespaceselector of the webhooks to enforce GKE Autopilot policies."
+NAME: cert-manager
+LAST DEPLOYED: Sat Dec 20 10:34:54 2025
+NAMESPACE: cert-manager
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NOTES:
+⚠️  WARNING: New default private key rotation policy for Certificate resources.
+The default private key rotation policy for Certificate resources was
+changed to `Always` in cert-manager >= v1.18.0.
+Learn more in the [1.18 release notes](https://cert-manager.io/docs/releases/release-notes/release-notes-1.18).
+
+cert-manager v1.19.2 has been deployed successfully!
+
+In order to begin issuing certificates, you will need to set up a ClusterIssuer
+or Issuer resource (for example, by creating a 'letsencrypt-staging' issuer).
+
+More information on the different types of issuers and how to configure them
+can be found in our documentation:
+
+https://cert-manager.io/docs/configuration/
+
+For information on how to configure cert-manager to automatically provision
+Certificates for Ingress resources, take a look at the `ingress-shim`
+documentation:
+
+https://cert-manager.io/docs/usage/ingress/
