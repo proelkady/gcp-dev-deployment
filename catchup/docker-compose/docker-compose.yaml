@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: proelkady/catchup-nginx:0.1.1
+    # build: ./nginx
+    container_name: catchup-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./certs:/etc/nginx/certs
+    depends_on:
+      - keycloak
+    networks:
+      - catchup-network
+
+  postgres:
+    image: postgres:15
+    container_name: catchup-postgres
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: "K59{4b)dS#dIQRbX"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - catchup-network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0.7
+    container_name: catchup-keycloak
+    command: start-dev --proxy-headers xforwarded --hostname-strict=false
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: "K59{4b)dS#dIQRbX"
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin-password
+      KC_HOSTNAME: auth-dev.catchup-app.app
+    depends_on:
+      - postgres
+    networks:
+      - catchup-network
+
+  mongodb:
+    image: mongo:6
+    container_name: catchup-mongodb
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - catchup-network
+
+networks:
+  catchup-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  mongo_data:

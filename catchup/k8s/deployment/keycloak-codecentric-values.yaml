@@ -1,0 +1,60 @@
+# Codecentric Keycloak Chart Values
+
+image:
+  tag: 26.0.7
+
+replicas: 2
+
+# Database Configuration
+extraEnv: |
+  - name: KC_DB
+    value: postgres
+  - name: KC_DB_URL
+    value: jdbc:postgresql://34.58.242.197:5432/keycloak
+  - name: KC_DB_USERNAME
+    value: keycloak
+  - name: KC_DB_PASSWORD
+    value: K59{4b)dS#dIQRbX
+  - name: KC_HOSTNAME
+    value: auth.catchup-me.com
+  - name: KC_PROXY
+    value: edge
+  - name: KEYCLOAK_ADMIN
+    value: admin
+  - name: KEYCLOAK_ADMIN_PASSWORD
+    value: admin-password
+
+# Enable HA/Clustering
+command:
+  - "/opt/keycloak/bin/kc.sh"
+  - "start"
+  - "--optimized"
+
+# Ingress
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  hosts:
+    - host: auth.catchup-me.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: keycloak-tls
+      hosts:
+        - auth.catchup-me.com
+
+# Resources
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1024Mi
+
+# PostgreSQL (Disable built-in, use external)
+postgresql:
+  enabled: false

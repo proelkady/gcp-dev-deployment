@@ -1,0 +1,55 @@
+# Keycloak HA Configuration
+auth:
+  adminUser: admin
+  adminPassword: admin-password # CHANGE THIS!
+
+# Use Official Keycloak Image (Bypassing Bitnami restrictions)
+image:
+  registry: quay.io
+  repository: keycloak/keycloak
+  tag: 26.0.7
+  # The official image uses different command/entrypoint than Bitnami
+  # We might need to adjust this if the chart doesn't support it natively.
+  # However, Bitnami charts are usually flexible.
+
+# Number of Keycloak replicas
+production: true
+proxyHeaders: xforwarded
+replicas: 2
+
+# Database Connection
+postgresql:
+  enabled: false
+externalDatabase:
+  host: 34.58.242.197
+  port: 5432
+  user: keycloak
+  password: K59{4b)dS#dIQRbX
+  database: keycloak
+
+# Clustering
+cache:
+  type: ispn
+  stack: kubernetes
+
+# Resource Requests
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 700m
+    memory: 1024Mi
+
+# Ingress Configuration
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  hostname: auth.catchup-me.com
+  tls: true
+  extraTls:
+    - hosts:
+        - auth.catchup-me.com
+      secretName: keycloak-tls
