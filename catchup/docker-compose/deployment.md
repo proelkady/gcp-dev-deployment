@@ -8,6 +8,7 @@
 4. Install Custom Keycloak image that include the SSL, make disk volume to store the data if needed
 5. Install MongoDB to be used by the App services, make disk volume to store the data
 6. Make sure that all these services are in same docker-compose network, make sure that the network is named catchup-network
+7. Any correct and confirmed commands and steps, document them
 
 ## Development environment domains
 

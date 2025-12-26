@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   nginx:
-    image: proelkady/catchup-nginx:0.1.1
+    image: proelkady/catchup-nginx:0.1.2
     # build: ./nginx
     container_name: catchup-nginx
     ports:
@@ -35,9 +35,9 @@ services:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
       KC_DB_USERNAME: keycloak
-      KC_DB_PASSWORD: "K59{4b)dS#dIQRbX"
+      KC_DB_PASSWORD: "K59{4b)dS#dIQRbX"  
       KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin-password
+      KEYCLOAK_ADMIN_PASSWORD: admin-password00))!
       KC_HOSTNAME: auth-dev.catchup-app.app
     depends_on:
       - postgres
