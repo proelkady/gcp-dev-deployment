@@ -2,8 +2,7 @@ version: '3.8'
 
 services:
   nginx:
-    image: proelkady/catchup-nginx:0.1.2
-    # build: ./nginx
+    image: proelkady/catchup-nginx:0.1.13
     container_name: catchup-nginx
     ports:
       - "80:80"
@@ -12,6 +11,7 @@ services:
       - ./certs:/etc/nginx/certs
     depends_on:
       - keycloak
+      - wordpress
     networks:
       - catchup-network
 
