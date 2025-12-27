@@ -1,0 +1,43 @@
+services:
+  iam:
+    image: proelkady/iam-service:0.1.2
+    container_name: iam
+    ports:
+      - "8081:8081"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: iam
+      DB_USERNAME: iam-db-user
+      DB_PASSWORD: GkVyNTMXcTf2jWnppq6V
+      KEYCLOAK_URL: http://keycloak:8080
+      KEYCLOAK_REALM: catchup-dev
+      KEYCLOAK_CLIENT_ID: iam-service
+      KEYCLOAK_CLIENT_SECRET: e7qvAJyOldjNJDFlGPNWgX4CH95RiqXM
+    networks:
+      - catchup-network
+  api-gateway:
+    image: proelkady/api-gateway:0.1.0
+    container_name: api-gateway
+    restart: unless-stopped
+    ports:
+      - "8090:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - IAM_SERVICE_URL=http://iam:8081
+      # Add other backend service URLs as needed
+      # - ANOTHER_SERVICE_URL=http://another-service:8082
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health" ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
+    networks:
+      - catchup-network
+
+networks:
+  catchup-network:
+    external: true

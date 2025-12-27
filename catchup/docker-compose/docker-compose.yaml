@@ -1,8 +1,7 @@
-version: '3.8'
-
 services:
   nginx:
-    image: proelkady/catchup-nginx:0.1.14
+    image: proelkady/catchup-nginx:0.1.15
+    restart: unless-stopped
     container_name: catchup-nginx
     ports:
       - "80:80"
@@ -17,7 +16,10 @@ services:
 
   postgres:
     image: postgres:15
+    restart: unless-stopped
     container_name: catchup-postgres
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
@@ -30,6 +32,7 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:26.0.7
     container_name: catchup-keycloak
+    restart: unless-stopped
     command: start-dev --proxy-headers xforwarded --hostname-strict=false
     environment:
       KC_DB: postgres
@@ -46,6 +49,7 @@ services:
 
   mongodb:
     image: mongo:6
+    restart: unless-stopped
     container_name: catchup-mongodb
     volumes:
       - mongo_data:/data/db
@@ -54,6 +58,7 @@ services:
 
   mysql:
     image: mysql:8.0
+    restart: unless-stopped
     container_name: catchup-mysql
     ports:
       - "3306:3306"
@@ -67,6 +72,7 @@ services:
 
   wordpress:
     image: wordpress:6.7.1
+    restart: unless-stopped
     container_name: catchup-wordpress
     ports:
       - "8080:80"
@@ -81,13 +87,31 @@ services:
       - mysql
     networks:
       - catchup-network
+  redis:
+    image: redis:7.2-alpine
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - catchup-network
 
 networks:
   catchup-network:
-    driver: bridge
+    external: true
 
 volumes:
   postgres_data:
   mongo_data:
   mysql_data:
   wordpress_data:
+  redis-data:
