@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   nginx:
-    image: proelkady/catchup-nginx:0.1.13
+    image: proelkady/catchup-nginx:0.1.14
     container_name: catchup-nginx
     ports:
       - "80:80"
