@@ -1,6 +1,6 @@
 services:
   nginx:
-    image: proelkady/catchup-nginx:0.1.15
+    image: proelkady/catchup-nginx:0.1.18
     restart: unless-stopped
     container_name: catchup-nginx
     ports:
@@ -38,10 +38,12 @@ services:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
       KC_DB_USERNAME: keycloak
-      KC_DB_PASSWORD: "K59{4b)dS#dIQRbX"  
+      KC_DB_PASSWORD: "K59{4b)dS#dIQRbX"
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin-password00))!
       KC_HOSTNAME: auth-dev.catchup-app.app
+      KC_HOSTNAME_PORT: -1
+      KC_PROXY: edge
     depends_on:
       - postgres
     networks:
@@ -102,6 +104,45 @@ services:
       timeout: 3s
       retries: 3
       start_period: 10s
+    networks:
+      - catchup-network
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui:latest
+    container_name: catchup-swagger-ui
+    restart: unless-stopped
+    ports:
+      - "8082:8080"
+    environment:
+      SWAGGER_JSON_URL: https://api-dev.catchup-app.app/docs/example-api.json
+    networks:
+      - catchup-network
+
+  oauth2-proxy:
+    image: quay.io/oauth2-proxy/oauth2-proxy:latest
+    container_name: catchup-oauth2-proxy
+    restart: unless-stopped
+    command:
+      - --provider=oidc
+      - --provider-display-name=Keycloak
+      - --client-id=docs-client
+      - --client-secret=ynYlwNFzaVbjnu8qaVrkJGYJl1TviCe0
+      - --redirect-url=https://docs-dev.catchup-app.app/oauth2/callback
+      - --oidc-issuer-url=https://auth-dev.catchup-app.app/realms/catchup-docs
+      - --ssl-insecure-skip-verify=true
+      - --cookie-secret=d5a64903d38b4d80869ffcf47aa5ae9e
+      - --email-domain=*
+      - --upstream=http://swagger-ui:8080
+      - --http-address=0.0.0.0:4180
+      - --cookie-secure=true
+      - --cookie-expire=24h
+      - --skip-provider-button=true
+      - --insecure-oidc-skip-issuer-verification=true
+      - --code-challenge-method=S256
+      - --insecure-oidc-allow-unverified-email=true
+    depends_on:
+      - swagger-ui
+      - keycloak
     networks:
       - catchup-network
 

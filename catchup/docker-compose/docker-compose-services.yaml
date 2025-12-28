@@ -17,7 +17,7 @@ services:
     networks:
       - catchup-network
   api-gateway:
-    image: proelkady/api-gateway:0.1.0
+    image: proelkady/api-gateway:0.1.2
     container_name: api-gateway
     restart: unless-stopped
     ports:
