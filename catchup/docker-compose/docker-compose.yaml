@@ -107,14 +107,14 @@ services:
     networks:
       - catchup-network
 
-  swagger-ui:
-    image: swaggerapi/swagger-ui:latest
-    container_name: catchup-swagger-ui
+  redocly:
+    image: redocly/redoc:latest
+    container_name: catchup-redocly
     restart: unless-stopped
     ports:
-      - "8082:8080"
+      - "8083:80"
     environment:
-      SWAGGER_JSON_URL: https://api-dev.catchup-app.app/docs/example-api.json
+      SPEC_URL: https://api-dev.catchup-app.app/docs/example-api
     networks:
       - catchup-network
 
@@ -132,7 +132,7 @@ services:
       - --ssl-insecure-skip-verify=true
       - --cookie-secret=d5a64903d38b4d80869ffcf47aa5ae9e
       - --email-domain=*
-      - --upstream=http://swagger-ui:8080
+      - --upstream=http://redocly:80
       - --http-address=0.0.0.0:4180
       - --cookie-secure=true
       - --cookie-expire=24h
@@ -141,7 +141,7 @@ services:
       - --code-challenge-method=S256
       - --insecure-oidc-allow-unverified-email=true
     depends_on:
-      - swagger-ui
+      - redocly
       - keycloak
     networks:
       - catchup-network
