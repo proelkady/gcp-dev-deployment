@@ -1,6 +1,6 @@
 services:
   iam:
-    image: proelkady/iam-service:0.1.2
+    image: proelkady/iam-service:0.1.4
     container_name: iam
     ports:
       - "8081:8081"
