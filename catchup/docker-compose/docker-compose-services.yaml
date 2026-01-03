@@ -1,10 +1,11 @@
 services:
   iam:
-    image: proelkady/iam-service:0.2.1
+    image: proelkady/iam-service:0.3.3
     container_name: iam
     ports:
       - "8081:8081"
     environment:
+      SPRING_PROFILES_ACTIVE: dev
       DB_HOST: postgres
       DB_PORT: 5432
       DB_NAME: iam
@@ -17,7 +18,7 @@ services:
     networks:
       - catchup-network
   api-gateway:
-    image: proelkady/api-gateway:0.1.4
+    image: proelkady/api-gateway:0.1.9
     container_name: api-gateway
     restart: unless-stopped
     ports:
